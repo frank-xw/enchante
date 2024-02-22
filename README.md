@@ -1,3 +1,3 @@
 # Enchanté
 
-LLM App for conversation starters
+LLM App for conversation starters.
