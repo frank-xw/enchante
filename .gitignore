@@ -1,3 +1,4 @@
 .env
 .vscode/
 prompt_info.txt
+.ds_store
