@@ -2,3 +2,6 @@
 .vscode/
 prompt_info.txt
 .ds_store
+*.ipynb
+profile.json
+__pycache__/
