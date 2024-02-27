@@ -7,12 +7,17 @@ def scrape_linkedin_profile(linkedin_profile_url, test_mode=True):
     Manually scrape the information from the Linkedin profile
     """
     if test_mode:
-        gist_url = (
-            "https://gist.githubusercontent.com/frank-xw/"
-            "6f059210a1c6d9ee9649b6869e1b610a/"
-            "raw/07d44364d3fd68466f1ec848a6881cb0b17a07de/andrew-ng.json"
-        )
-        response = requests.get(gist_url)
+        if "linkedin" not in linkedin_profile_url:
+            raise Exception(
+                f"Wrong Linkedin URL found: {linkedin_profile_url}"
+            )
+        else:
+            gist_url = (
+                "https://gist.githubusercontent.com/frank-xw/"
+                "6f059210a1c6d9ee9649b6869e1b610a/"
+                "raw/07d44364d3fd68466f1ec848a6881cb0b17a07de/andrew-ng.json"
+            )
+            response = requests.get(gist_url)
 
     else:
         api_endpoint = "https://nubela.co/proxycurl/api/v2/linkedin"

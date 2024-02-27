@@ -8,6 +8,8 @@ langchain = "*"
 python-dotenv = "*"
 openai = "*"
 langchain-openai = "*"
+langchainhub = "*"
+google-search-results = "*"
 
 [dev-packages]
 ipykernel = "*"
