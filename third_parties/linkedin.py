@@ -48,5 +48,20 @@ def scrape_linkedin_profile(linkedin_profile_url, test_mode=True):
     return data
 
 
+def get_profile_pic_url(linkedin_profile_url):
+    """Get Linkedin profile picture URL"""
+    api_key = os.environ.get("PROXYCURL_API_KEY")
+    headers = {"Authorization": "Bearer " + api_key}
+    api_endpoint = (
+        "https://nubela.co/proxycurl/api/linkedin/person/profile-picture"
+    )
+    params = {
+        "linkedin_person_profile_url": linkedin_profile_url,
+    }
+    response = requests.get(api_endpoint, params=params, headers=headers)
+
+    return response.json().get("tmp_profile_pic_url")
+
+
 if __name__ == "__main__":
-    print(scrape_linkedin_profile("test").json())
+    print(get_profile_pic_url("https://www.linkedin.com/in/andrewyng"))

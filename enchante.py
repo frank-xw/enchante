@@ -3,7 +3,7 @@ from langchain.chains import LLMChain
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
-from third_parties.linkedin import scrape_linkedin_profile
+from third_parties.linkedin import scrape_linkedin_profile, get_profile_pic_url
 from agents.linkedin_lookup_agent import lookup as linkedin_lookup_agent
 from output_parser import person_intel_parser, PersonIntel
 
@@ -47,11 +47,12 @@ def enchante(name: str) -> PersonIntel:
     linkedin_data = scrape_linkedin_profile(
         linkedin_profile_url=linkedin_profile_url
     )
+    linkedin_profile_pic = get_profile_pic_url(linkedin_profile_url)
 
     res = chain.invoke(input={"information": linkedin_data})
 
     print(res["text"])
-    return person_intel_parser.parse(res["text"])
+    return person_intel_parser.parse(res["text"]), linkedin_profile_pic
 
 
 if __name__ == "__main__":
