@@ -2,11 +2,12 @@ import os
 import requests
 
 
-def scrape_linkedin_profile(linkedin_profile_url, test_mode=True):
+def scrape_linkedin_profile(linkedin_profile_url):
     """scrape information from Linkedin profiles
     Manually scrape the information from the Linkedin profile
     """
-    if test_mode:
+    debug = os.environ.get("DEBUG_MODE")
+    if debug == "True":
         if "linkedin" not in linkedin_profile_url:
             raise Exception(
                 f"Wrong Linkedin URL found: {linkedin_profile_url}"
@@ -18,6 +19,8 @@ def scrape_linkedin_profile(linkedin_profile_url, test_mode=True):
                 "raw/07d44364d3fd68466f1ec848a6881cb0b17a07de/andrew-ng.json"
             )
             response = requests.get(gist_url)
+            data = response.json()
+            profile_pic_url = get_profile_pic_url(linkedin_profile_url)
 
     else:
         api_endpoint = "https://nubela.co/proxycurl/api/v2/linkedin"
@@ -29,8 +32,8 @@ def scrape_linkedin_profile(linkedin_profile_url, test_mode=True):
             params={"linkedin_profile_url": linkedin_profile_url},
             headers=headers,
         )
-
-    data = response.json()
+        data = response.json()
+        profile_pic_url = data.get("profile_pic_url")
 
     data = {
         key: value
@@ -45,7 +48,7 @@ def scrape_linkedin_profile(linkedin_profile_url, test_mode=True):
         for group_dict in data.get("groups"):
             group_dict.pop("profile_pic_url")
 
-    return data
+    return data, profile_pic_url
 
 
 def get_profile_pic_url(linkedin_profile_url):
@@ -59,9 +62,10 @@ def get_profile_pic_url(linkedin_profile_url):
         "linkedin_person_profile_url": linkedin_profile_url,
     }
     response = requests.get(api_endpoint, params=params, headers=headers)
+    profile_pic_url = response.json().get("tmp_profile_pic_url")
 
-    return response.json().get("tmp_profile_pic_url")
+    return profile_pic_url
 
 
 if __name__ == "__main__":
-    print(get_profile_pic_url("https://www.linkedin.com/in/andrewyng"))
+    scrape_linkedin_profile("https://www.linkedin.com/in/andrewyng")

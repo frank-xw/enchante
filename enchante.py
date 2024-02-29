@@ -3,15 +3,20 @@ from langchain.chains import LLMChain
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
-from third_parties.linkedin import scrape_linkedin_profile, get_profile_pic_url
+from third_parties.linkedin import scrape_linkedin_profile
 from agents.linkedin_lookup_agent import lookup as linkedin_lookup_agent
 from output_parser import person_intel_parser, PersonIntel
+import os
 
 
 def enchante(name: str) -> PersonIntel:
     load_dotenv()
 
-    linkedin_profile_url = linkedin_lookup_agent(name=name)
+    debug = os.environ.get("DEBUG_MODE")
+    if debug == "True":
+        linkedin_profile_url = "https://www.linkedin.com/in/andrewyng"
+    else:
+        linkedin_profile_url = linkedin_lookup_agent(name=name)
 
     # with open("prompt_info.txt", "r") as f:
     #     information = f.read()
@@ -44,15 +49,16 @@ def enchante(name: str) -> PersonIntel:
 
     chain = LLMChain(llm=llm, prompt=summary_prompt_template)
 
-    linkedin_data = scrape_linkedin_profile(
+    linkedin_data, profile_pic_url = scrape_linkedin_profile(
         linkedin_profile_url=linkedin_profile_url
     )
-    linkedin_profile_pic = get_profile_pic_url(linkedin_profile_url)
+    # linkedin_profile_pic = get_profile_pic_url(linkedin_profile_url)
 
     res = chain.invoke(input={"information": linkedin_data})
 
     print(res["text"])
-    return person_intel_parser.parse(res["text"]), linkedin_profile_pic
+    print(f"linkedin_profile_pic: {profile_pic_url}")
+    return person_intel_parser.parse(res["text"]), profile_pic_url
 
 
 if __name__ == "__main__":
