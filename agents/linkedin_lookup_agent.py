@@ -13,7 +13,7 @@ def lookup(name: str) -> str:
     template = """
     Given the full name {name_of_person}, \
     I want you to get me the link to their Linkedin profile page.
-    Your answer should only contain a URL.
+    Your answer should only contain a Linkedin URL.
     """
 
     prompt_template = PromptTemplate(
@@ -36,7 +36,10 @@ def lookup(name: str) -> str:
         prompt=react_prompt,
     )
     agent_executor = AgentExecutor(
-        agent=agent, tools=tools_for_agent, verbose=True
+        agent=agent,
+        tools=tools_for_agent,
+        verbose=True,
+        handle_parsing_errors=True,
     )
 
     result = agent_executor.invoke(
